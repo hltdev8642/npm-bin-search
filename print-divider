@@ -1,0 +1,162 @@
+#!/bin/bash
+
+############################## RAINBOW.SH IMPORT ##############################
+
+#  Copyright 2013 Manuel Gutierrez <dhunterkde@gmail.com>
+#  https://github.com/xr09/rainbow.sh
+#  Bash helper functions to put colors on your scripts
+#
+#  Usage example:
+#  vargreen=$(echogreen "Grass is green")
+#  echo "Coming next: $vargreen"
+#
+
+div_char="─"
+__RAINBOWPALETTE="1"
+
+function __colortext()
+{
+  echo -e " \e[$__RAINBOWPALETTE;$2m$1\e[0m"
+}
+
+
+function echogreen()
+{
+  echo $(__colortext "$1" "32")
+}
+
+function echored()
+{
+  echo $(__colortext "$1" "31")
+}
+
+function echoblue()
+{
+  echo $(__colortext "$1" "34")
+}
+
+function echopurple()
+{
+  echo $(__colortext "$1" "35")
+}
+
+function echoyellow()
+{
+  echo $(__colortext "$1" "33")
+}
+
+function echocyan()
+{
+  echo $(__colortext "$1" "36")
+}
+
+function echoplain()
+{
+  echo $(__colortext "$1" "37")
+}
+
+###############################################################################
+
+print_div ()
+{
+
+for i in $(mkseq 0 $(($(tput cols)-1))); do
+  printf "$div_char" ;
+done
+}
+
+# [ -z $1 ] && div_char="_" ||div_char="$1"
+# [ -z $2 ] && div_color="plain" ||div_color="$2"
+
+#
+# src: https://stackoverflow.com/questions/192249
+#			 /how-do-i-parse-command-line-arguments-in-bash
+	# for i in "$@"
+	# do
+	# case $i in
+	#     -c=*|--color=*)
+	#     div_color="${i#*=}"
+	#     shift
+	#     ;;
+	#     -d=*|--div=*)
+	#     div_char="${i#*=}"
+	#     shift
+	#     ;;
+	#     *)
+	#     div_char="_"
+	#     div_color="plain"
+	#     ;;
+	# esac
+	# done
+
+handle_argument ()
+{
+	div_color="plain"
+	div_char="─"
+}
+
+show_help ()
+{
+# echo help
+# echo "========================================================="
+echo "print-divider.sh: print a divider the terminal width,"
+echo  "with input char and color parameters."
+echo
+echo "usage:"
+echo
+echo "   print-divider.sh [args]"
+echo
+echo "   Color of divider"
+echo "   -c   --color   [(green|red|blue|purple|yellow|cyan|plain)] "
+echo
+echo "   Char for divider"
+echo "   -d   --div   [(any char / string of chars)]"
+echo
+# echo "========================================================="
+exit
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -c|--color) div_color="$2"; shift 2;;
+    -h|--help) show_help; shift 2;;
+    -d|--div) div_char="$2"; shift 2;;
+    --color=*|-c=*) div_color="${1#*=}"; shift 1;;
+    --div=*|-d=*) div_char="${1#*=}"; shift 1;;
+    -*) echo "unknown option: $1" >&2; exit 1;;
+    *) handle_argument "$1"; shift 1;;
+  esac
+done
+
+[ -z $div_char ] && div_char="_" ;
+[ -z $div_color ] && div_color="plain" ;
+
+case $div_color in
+green)
+	color_cmd="echogreen"
+;;
+red)
+	color_cmd="echored"
+;;
+blue)
+	color_cmd="echoblue"
+;;
+purple)
+	color_cmd="echopurple"
+;;
+yellow)
+	color_cmd="echoyellow"
+;;
+cyan)
+	color_cmd="echocyan"
+;;
+plain)
+	color_cmd="echoplain"
+;;
+*)
+	color_cmd="echoplain"
+;;
+esac
+
+
+$color_cmd $(print_div $div_char)
