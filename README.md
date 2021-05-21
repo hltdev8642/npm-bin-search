@@ -5,7 +5,7 @@ an organized (sorted) table of results.
 
 ## Usage:
 ```
-npm-binary-search [query]`
+npm-binary-search [query]
 ```
 
 ## Flags:
