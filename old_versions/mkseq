@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# generate seq from start(x) to end(y)
+
+[ -z $1 ] && read -p "start(x):" x || x=$1;
+[ -z $2 ] && read -p "end(y):" x || y=$2;
+
+seq -w $x $y
